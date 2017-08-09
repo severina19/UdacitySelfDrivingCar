@@ -26,17 +26,18 @@ My pipeline consisted of 5 steps. First, I converted the images to grayscale, th
 In order to draw a single line on the left and right lanes, I have first classified the lines in two groups, one group presenting the lines of the left lane and vice versa. To do that I computed the gradient and classified the lines accordingly. To do the extrapolation of the lines, I implemented a function called extrapolateLine. In there I use the function polyfit to ding a polynominal of degree 1 (which is a line) for all the points to connect one line.
 
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
-
-![alt text][image1]
+![alt text](https://github.com/severina19/UdacitySelfDrivingCar/blob/master/Lesson1/test_images_output/solidWhiteCurve.jpg?raw=true)
 
 
 ### 2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when we enter a curve entry and the lane becomes also curvy, the current extrapolation method using polinomial of degree one could result in larger error.
+One potential shortcoming would be what would happen when we enter a curve entry and the lane becomes also curvy, the current extrapolation method using polinomial of degree one could result in larger error, see for example image below:
+![alt text](https://github.com/severina19/UdacitySelfDrivingCar/blob/master/Lesson1/test_images_output/solidYellowCurve.jpg?raw=true)
 
-Also, if there are other type of lines entering our region of interest, for example dashed white lines signalising end of this lane/parking prohibitated, it will also have a large influence of the current pipeline
+Also, if there are other type of lines entering our region of interest, for example dashed white lines signalising end of this lane/parking prohibitated, it will also have a large influence of the current pipeline.
+
+As we can see in the result of the "challenge video", the current pipeline needs to improve robustness in more complex situation for example changing lightning condition. But how I am not sure, would be great if you guys can give some suggestions!
 
 
 ### 3. Suggest possible improvements to your pipeline
