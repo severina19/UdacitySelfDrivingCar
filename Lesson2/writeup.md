@@ -91,13 +91,13 @@ The Model has 3 convolutional layers and 3 fully connected layers. To train the 
 For the training I tried out different set of hyper parameters. For the leaning rate, I started with 1e-3 but the optimizer reached a plateau at around 75% accuracy. I also tried out learning decay starting with rate of 1e-3. I find that a constant learning rate of 1e-4 is a good value. 
 
 My final model results were:
-* training set accuracy of 0.974
-* validation set accuracy of 0.965 
-* test set accuracy of 0.911
+* training set accuracy of 0.971
+* validation set accuracy of 0.964
+* test set accuracy of 0.907
 
 At the beginning I used the exact same net as in the LeNet example with the only change of number of output from 10 to 43. The result was not very satisfying, in my opinion because the number of filter in the previous Convolutional Network was too low. I increased the number and the result was better. But the result of the test set was still not accurate due to overfitting, this is why I introduced a drop out probablity of 0.5 during training in the first two fully connected layer and the performance became much better. 
 
-From the final result we can see that the network is able to classify traffic signs with an accuracy of 91.1% for the test set. The accuracy of the training set and validation set are around 5% higher. In my opinion, feeding in more data will increase the performance. For example, we could rotate the traffic signs and feed the result into our training, thus obtain many more data sets. 
+From the final result we can see that the network is able to classify traffic signs with an accuracy of 0.907 for the test set. The accuracy of the training set and validation set are around 5% higher. In my opinion, feeding in more data will increase the performance. For example, we could rotate the traffic signs and feed the result into our training, thus obtain many more data sets. 
 
 
 ###Test a Model on New Images
@@ -112,10 +112,7 @@ Here are seven German traffic signs that I found on the web:
 ![alt text][image10]
 ![alt text][image11]
 
-
-
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set 
-
+#### Results 
 Here are the results of the prediction:
 
 | Image			           |     Prediction	        			| 
@@ -143,6 +140,7 @@ For the first image, the model is very sure that this is a stop sign (probabilit
 
 
 For the second image the result was not satisfying. The sign was actually Road Work but the classified was half certain that it is a double curve sign. The top five soft max probabilities are listed below. We can see that, although for human eye it is clear that the sign is a road work sign, the watermarks have huge inpact on the performace of the classifier. In my opinion this is because our network has never seen similar pattern during training. If signs with noise applied are also used during training, the performance could be improved.
+
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | 0.455007         			| Double curve    									| 
@@ -154,6 +152,7 @@ For the second image the result was not satisfying. The sign was actually Road W
 For the third image, the classifier has given a very confident and correct classification of almost 100% to the yield sign. And the classification of the fourth image, which is a 'Right-of-way at the next intersection' sign is also classified with 99.978% confidence. The 6th image, which is a 'Roundabout mandatory' sign was also classified correct with a confidence of 99.7%.
 
 The fifth image which is a 'Vehicles over 3.5 metric tons prohibite'- sign was only classified by the network as the 5th candidate with 0.0016% possibility, again due to the watermarks. In the 7th Image I have used the classifier on the same sign without watermark and the result was correct with 99.8% confidence.
+
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | 0.986550         			| Roundabout mandatory    									| 
