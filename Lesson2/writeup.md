@@ -20,10 +20,10 @@ The goals / steps of this project are the following:
 [image3]: ./speed_30.png "Example of Training Data: Speed Limit 70 kmh"
 [image4]: ./speed_30_gray.png "Example of Training Data: Speed Limit 70 kmh"
 
-[image5]: ./signs/00000.ppm "traffic sign found on internet - 1"
-[image6]: ./signs/00001.ppm "traffic sign found on internet - 2"
-[image7]: ./signs/00002.ppm "traffic sign found on internet - 3"
-[image8]: ./signs/00003.ppm "traffic sign found on internet - 4"
+[image5]: ./signs/00000.png "traffic sign found on internet - 1"
+[image6]: ./signs/00001.png "traffic sign found on internet - 2"
+[image7]: ./signs/00002.png "traffic sign found on internet - 3"
+[image8]: ./signs/00003.png "traffic sign found on internet - 4"
 [image9]: ./signs/caution.jpg  "traffic sign found on internet - 5"
 
 ## Rubric Points
