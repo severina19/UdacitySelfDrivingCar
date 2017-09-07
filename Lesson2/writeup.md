@@ -25,6 +25,7 @@ The goals / steps of this project are the following:
 [image8]: ./signs/4.png "traffic sign found on internet - 4"
 [image9]: ./signs/5.png  "traffic sign found on internet - 5"
 [image10]: ./signs/6.png  "traffic sign found on internet - 5"
+[image11]: ./signs/7.png  "traffic sign found on internet - 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -101,7 +102,7 @@ From the final result we can see that the network is able to classify traffic si
 
 ###Test a Model on New Images
 
-Here are six German traffic signs that I found on the web:
+Here are seven German traffic signs that I found on the web:
 
 ![alt text][image5] 
 ![alt text][image6] 
@@ -109,19 +110,26 @@ Here are six German traffic signs that I found on the web:
 ![alt text][image8] 
 ![alt text][image9]
 ![alt text][image10]
+![alt text][image11]
+
 
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set 
 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Image			           |     Prediction	        			| 
+|:------------------------:|:----------------------------------:| 
+| Stop Sign      		   | Stop sign   						| 
+| Road Work   			   | Double curve 						|
+| Yield					   | Yield								|
+| Right-of-way at the\     | Right-of-way at the\               |
+| next intersection	       | next intersection					|
+| Vehicles over 3.5 metric\| Roundabout mandatory\              |
+| tons prohibited		   |       							    |
+| Roundabout mandatory	   | Roundabout mandatory				|
+| Vehicles over 3.5 metric\| Vehicles over 3.5 metric tons\     |
+| tons prohibited		   | prohibited				            |
 
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
