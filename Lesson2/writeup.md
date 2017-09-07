@@ -123,8 +123,11 @@ If a well known architecture was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image5] ![alt text][image6] ![alt text][image7] 
-![alt text][image8] ![alt text][image9]
+![alt text][image5] 
+![alt text][image6] 
+![alt text][image7] 
+![alt text][image8] 
+![alt text][image9]
 
 The first image might be difficult to classify because ...
 
