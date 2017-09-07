@@ -17,6 +17,14 @@ The goals / steps of this project are the following:
 
 [image1]: ./NumOfDatTraining.png "Number of Traffic Sign of different Classes in Training Data"
 [image2]: ./speed_70.png "Example of Training Data: Speed Limit 70 kmh"
+[image3]: ./speed_30.png "Example of Training Data: Speed Limit 70 kmh"
+[image4]: ./speed_30_gray.png "Example of Training Data: Speed Limit 70 kmh"
+
+[image5]: ./signs/00000.ppm "traffic sign found on internet - 1"
+[image6]: ./signs/00001.ppm "traffic sign found on internet - 2"
+[image7]: ./signs/00002.ppm "traffic sign found on internet - 3"
+[image8]: ./signs/00003.ppm "traffic sign found on internet - 4"
+[image9]: ./signs/caution.jpg  "traffic sign found on internet - 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -24,36 +32,36 @@ The goals / steps of this project are the following:
 ---
 ###Writeup / README
 
-
 You're reading it! and here is a link to my [project code](https://github.com/severina19/UdacitySelfDrivingCar/blob/master/Lesson2/Traffic_Sign_Classifier_trained.ipynb)
 
 ###Data Set Summary & Exploration
 
-I used the pandas library to calculate summary statistics of the traffic
-signs data set:
+I used the numpy library to calculate summary statistics of the traffic 
+signs data set. In the pickled data which was provided to us, the dataset is already devided into training, validation and testing. I find that the validation set has a bit less data, that is why I have reassined the validation and training set with a ratio of 1:4. I left the test data set as it is. After the reassignment:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set is 31367
+* The size of the validation set is 7842
+* The size of test set is 12630
+* The shape of a traffic sign image is 32x32x3
+* The number of unique classes/labels in the data set is 43
 
 ####2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Here is an exploratory visualization of the data set. It is a bar chart showing how data are distributed among different classes for the training set. We can see that the distribution is not balanced, for some classes such as class 19 which is "Dangerous curve to the left" there are only few dataset. 
 
 ![alt text][image1]
+
+All the traffic signs are sampled to 32x32 bit, and below we can see an example of it.  
 ![alt text][image2]
 
 ###Design and Test a Model Architecture
 
-####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
-
-As a first step, I decided to convert the images to grayscale because ...
+In the pre-processing step I converted the images into grayscale and normalized the data. I tried using RGB images for training too but the grayscale images yield better results. Using grayscale also saves computational time. 
 
 Here is an example of a traffic sign image before and after grayscaling.
 
-![alt text][image2]
+![alt text][image3]
+![alt text][image4]
 
 As a last step, I normalized the image data because ...
 
@@ -67,35 +75,36 @@ Here is an example of an original image and an augmented image:
 
 The difference between the original data set and the augmented data set is the following ... 
 
-
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
-
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Input         		| 32x32x1 RGB image   							| 
+| Convolution 5x5     	| 1x1 stride, same padding, outputs 32x32x64 	|
 | RELU					|												|
 | Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
 | Convolution 3x3	    | etc.      									|
+| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
+| Convolution 3x3	    | etc.      									|
+| Fully connected		| etc.        									|
+| Fully connected		| etc.        									|
 | Fully connected		| etc.        									|
 | Softmax				| etc.        									|
 |						|												|
 |						|												|
  
 
-
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model, I used the adam optimizer which was also used in the LeNet example. 
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
+
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of 0.974
+* validation set accuracy of 0.965 
+* test set accuracy of 0.911
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -112,12 +121,10 @@ If a well known architecture was chosen:
 
 ###Test a Model on New Images
 
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
-
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![alt text][image5] ![alt text][image6] ![alt text][image7] 
+![alt text][image8] ![alt text][image9]
 
 The first image might be difficult to classify because ...
 
