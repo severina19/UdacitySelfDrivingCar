@@ -19,12 +19,11 @@ The goals / steps of this project are the following:
 [image2]: ./speed_70.png "Example of Training Data: Speed Limit 70 kmh"
 [image3]: ./speed_30.png "Example of Training Data: Speed Limit 70 kmh"
 [image4]: ./speed_30_gray.png "Example of Training Data: Speed Limit 70 kmh"
-
-[image5]: ./signs/00000.png "traffic sign found on internet - 1"
-[image6]: ./signs/00001.png "traffic sign found on internet - 2"
-[image7]: ./signs/00002.png "traffic sign found on internet - 3"
-[image8]: ./signs/00003.png "traffic sign found on internet - 4"
-[image9]: ./signs/caution.jpg  "traffic sign found on internet - 5"
+[image5]: ./signs/1.png "traffic sign found on internet - 1"
+[image6]: ./signs/2.png "traffic sign found on internet - 2"
+[image7]: ./signs/3.png "traffic sign found on internet - 3"
+[image8]: ./signs/4.png "traffic sign found on internet - 4"
+[image9]: ./signs/5.jpg  "traffic sign found on internet - 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
