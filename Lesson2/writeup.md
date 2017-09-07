@@ -129,24 +129,38 @@ Here are the results of the prediction:
 | Vehicles over 3.5 metric tons prohibited	| Vehicles over 3.5 metric tons prohibited     |
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 5 of the 7 traffic signs, which gives an accuracy of 71%. It is not able to correctly classify the 2nd and 5th sign, both with notable watermarks on them. 
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
-
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
-
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+For the first image, the model is very sure that this is a stop sign (probability of nearly 1), and the image does contain a stop sign. The top five soft max probabilities were
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+| 0.999989         			| Stop sign    									| 
+| 0.000006     				| Bumpy road 										|
+| 0.000003					| Yield											|
+| 0.000003	      			| Keep right					 				|
+| 0.000003				    |Turn left ahead     							|
 
 
-For the second image ... 
+For the second image the result was not satisfying. The sign was actually Road Work but the classified was half certain that it is a double curve sign. The top five soft max probabilities are listed below. We can see that, although for human eye it is clear that the sign is a road work sign, the watermarks have huge inpact on the performace of the classifier. In my opinion this is because our network has never seen similar pattern during training. If signs with noise applied are also used during training, the performance could be improved.
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 0.455007         			| Double curve    									| 
+| 0.105905    				| Wild animals crossing										|
+| 0.093534					| Dangerous curve to the left											|
+|  0.093534	      			| Road narrows on the right					 				|
+| 0.093534		    |Right-of-way at the next intersection     							| 
+
+For the third image, the classifier has given a very confident and correct classification of almost 100% to the yield sign. And the classification of the fourth image, which is a 'Right-of-way at the next intersection' sign is also classified with 99.978% confidence. The 6th image, which is a 'Roundabout mandatory' sign was also classified correct with a confidence of 99.7%.
+
+The fifth image which is a 'Vehicles over 3.5 metric tons prohibite'- sign was only classified by the network as the 5th candidate with 0.0016% possibility, again due to the watermarks. In the 7th Image I have used the classifier on the same sign without watermark and the result was correct with 99.8% confidence.
+| Probability         	|     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| 0.986550         			| Roundabout mandatory    									| 
+| 0.009567   				| Priority road									|
+| 0.001562				| Pedestrians											|
+|  0.001562     			| General caution				 				|
+| 0.001562		    |Vehicles over 3.5 metric tons prohibited     							| 
 
 
 
