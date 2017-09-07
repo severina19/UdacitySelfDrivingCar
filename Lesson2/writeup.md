@@ -123,13 +123,10 @@ Here are the results of the prediction:
 | Stop Sign      		   | Stop sign   						| 
 | Road Work   			   | Double curve 						|
 | Yield					   | Yield								|
-| Right-of-way at the\     | Right-of-way at the\               |
-| next intersection	       | next intersection					|
-| Vehicles over 3.5 metric\| Roundabout mandatory\              |
-| tons prohibited		   |       							    |
+| Right-of-way at the  next intersection	    | Right-of-way at the next intersection              |
+| Vehicles over 3.5 metric tons prohibited	| Roundabout mandatory              |
 | Roundabout mandatory	   | Roundabout mandatory				|
-| Vehicles over 3.5 metric\| Vehicles over 3.5 metric tons\     |
-| tons prohibited		   | prohibited				            |
+| Vehicles over 3.5 metric tons prohibited	| Vehicles over 3.5 metric tons prohibited     |
 
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
