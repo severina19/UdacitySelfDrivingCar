@@ -23,7 +23,7 @@ The goals / steps of this project are the following:
 [image6]: ./signs/2.png "traffic sign found on internet - 2"
 [image7]: ./signs/3.png "traffic sign found on internet - 3"
 [image8]: ./signs/4.png "traffic sign found on internet - 4"
-[image9]: ./signs/5.jpg  "traffic sign found on internet - 5"
+[image9]: ./signs/5.png  "traffic sign found on internet - 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -35,8 +35,7 @@ You're reading it! and here is a link to my [project code](https://github.com/se
 
 ###Data Set Summary & Exploration
 
-I used the numpy library to calculate summary statistics of the traffic 
-signs data set. In the pickled data which was provided to us, the dataset is already devided into training, validation and testing. I find that the validation set has a bit less data, that is why I have reassined the validation and training set with a ratio of 1:4. I left the test data set as it is. After the reassignment:
+I used the numpy library to calculate summary statistics of the traffic signs data set. In the pickled data which was provided to us, the dataset is already devided into training, validation and testing. I find that the validation set has a bit less data, that is why I have reassined the validation and training set with a ratio of 1:4. I left the test data set as it is. After the reassignment:
 
 * The size of training set is 31367
 * The size of the validation set is 7842
@@ -52,6 +51,7 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 
 All the traffic signs are sampled to 32x32 bit, and below we can see an example of it.  
 ![alt text][image2]
+As we can see, the resolution of 32 bit is quite low and under poor lighting it is sometimes not easy for human to classify it correctly.  
 
 ###Design and Test a Model Architecture
 
@@ -62,53 +62,41 @@ Here is an example of a traffic sign image before and after grayscaling.
 ![alt text][image3]
 ![alt text][image4]
 
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
-
-![alt text][image3]
-
-The difference between the original data set and the augmented data set is the following ... 
+I normalized the image data so that the range of distribution of the input values are the same, so that we will not have a large change of gradient for input with higher values.  
 
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Input         		| 32x32x1 RGB image   							| 
-| Convolution 5x5     	| 1x1 stride, same padding, outputs 32x32x64 	|
-| RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Fully connected		| etc.        									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6 				    |
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x16   |
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16 				    |
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 1x1x256    |  
+| Fully connected		| outputs 1x1x256           					|
+| Relu           		|                            					|
+| Dropout          		|                            					|
+| Fully connected		| outputs 1x1x86 .        						|
+| Relu           		|                            					|
+| Dropout          		|                            					|
+| Fully connected		| outputs 1x1x43   							    |
+| Softmax				|           									|
 |						|												|
 |						|												|
  
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+The Model has 3 convolutional layers and 3 fully connected layers. To train the model, I used the adam optimizer which was also used in the LeNet example. As for the batch size I chose 128, and epochs I chose 40. 
 
-To train the model, I used the adam optimizer which was also used in the LeNet example. 
-
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
-
+For the training I tried out different set of hyper parameters. For the leaning rate, I started with 1e-3 but the optimizer reached a plateau at around 75% accuracy. I also tried out learning decay starting with rate of 1e-3. I find that a constant learning rate of 1e-4 is a good value. 
 
 My final model results were:
 * training set accuracy of 0.974
 * validation set accuracy of 0.965 
 * test set accuracy of 0.911
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+At the beginning I used the exact same net as in the LeNet example with the only change of number of output from 10 to 43. The result was not very satisfying, in my opinion because the number of filter in the conv Net was too low. I increased the number and the result was better. But the result of the test set was still low probably because of overfitting, this is why I introduced a drop out probablity of 0.5 during training in the first two fully connected layer and the performance became much better. 
+ 
 * Which parameters were tuned? How were they adjusted and why?
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
@@ -162,7 +150,17 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 
 For the second image ... 
 
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+
+
+I decided to generate additional data because ... 
+
+To add more data to the the data set, I used the following techniques because ... 
+
+Here is an example of an original image and an augmented image:
+
+![alt text][image3]
+
+The difference between the original data set and the augmented data set is the following ... 
+
 
 
