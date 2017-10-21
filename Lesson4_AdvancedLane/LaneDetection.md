@@ -52,7 +52,7 @@ The example image I have used is shown below.
 ![alt text][image1]
 
 
-### image Undistortion
+### Image Undistortion
 The first step of the pipeline is to perform image distortion correction, using the camera matrix we obtained previously. The image with distortion correction is the following:
 
 ![alt text][image2]
