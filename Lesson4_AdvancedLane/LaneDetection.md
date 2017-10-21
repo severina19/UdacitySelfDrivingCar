@@ -38,102 +38,9 @@ The goals / steps of this project are the following:
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.
 
 
-[//]: # (Image References)
-
-[image0]: ./output_images/camera_distort.png "Camera Distortion"
-[image1]: ./output_images/Original_Image.png "Original Image"
-[image2]: ./output_images/Undist_Img.png "Undistorted"
-[image3]: ./output_images/binary_warped.png "Binary Warped Image"
-[image4]: ./output_images/color_threshold.png "Image with Color Threshold"
-[image5]: ./output_images/warped_in_b.png "Warped Image Birds Eye View"
-[image6]: ./output_images/result.png "Output"
-[image7]: ./output_images/HLS.png "HLS color space"
-[image8]: ./output_images/image_l.png "Image in L Space"
-[image9]: ./output_images/image_sobel.png "Image with sobel filter"
-[video1]: ./save.mp4 "Video"
-
-
-
-```python
-import cv2
-import glob
-from PIL import Image
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from ipywidgets import interact, interactive, fixed
-
-global counter
-global lane_left 
-global lane_right
-global mtx
-global dist
-
-```
-
-
-```python
-# read in images for camera calibration
-file_path = os.getcwd() +  "\\"+"camera_cal"+ "\\"
-images=glob.glob(file_path + "calibration*.jpg")
-
-objpoints=[]
-imgpoints=[]
-nx = 9 # the number of inside corners in x
-ny = 6 # the number of inside corners in y
-objp = np.zeros((ny*nx,3), np.float32)
-objp[:,:2] = np.mgrid[0:nx,0:ny].T.reshape(-1,2)
-
-# find object points in chessboard iamge 
-for image in images:
-    img=cv2.imread(image)
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    ret, corners = cv2.findChessboardCorners(gray, (nx,ny), None)
-    if ret==True:
-        imgpoints.append(corners)
-        objpoints.append(objp)
-        img = cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
-img_size = (gray.shape[1], gray.shape[0])
-
-# perform camera calibration to obtain the mtx matrix 
-ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img_size, None, None)
-```
-
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function. A comparision between the original image and the undistorted one is presented in the following picture：
 
-
-```python
-#Examples of undistorted chessboard image
-%matplotlib inline
-plt.figure(figsize=(10,8))
-
-img = cv2.imread("camera_cal/calibration2.jpg")
-img_undist = cv2.undistort(img, mtx, dist, None, mtx)
-plt.subplot(2,2,1)
-plt.title('Original Image', fontsize=20)
-fig =plt.imshow(img)
-
-plt.subplot(2,2,2)
-plt.title('Undistorted Image', fontsize=20)
-fig =plt.imshow(img_undist)
-
-
-img = cv2.imread("camera_cal/calibration5.jpg")
-img_undist = cv2.undistort(img, mtx, dist, None, mtx)
-plt.subplot(2,2,3)
-plt.title('Original Image', fontsize=20)
-fig =plt.imshow(img)
-
-plt.subplot(2,2,4)
-plt.title('Undistorted Image')
-fig =plt.imshow(img_undist)
-#plt.savefig('camera_distort.png')
-```
-
-
-![png](output_8_0.png)
-
+![alt text][image0]
 
 ## Pipeline (images)
 
@@ -218,6 +125,102 @@ When I first ran my image processing pipeline, the lane detection algorithm was 
 
 
 
+
+
+
+[//]: # (Image References)
+
+[image0]: ./output_images/camera_distort.png "Camera Distortion"
+[image1]: ./output_images/Original_Image.png "Original Image"
+[image2]: ./output_images/Undist_Img.png "Undistorted"
+[image3]: ./output_images/binary_warped.png "Binary Warped Image"
+[image4]: ./output_images/color_threshold.png "Image with Color Threshold"
+[image5]: ./output_images/warped_in_b.png "Warped Image Birds Eye View"
+[image6]: ./output_images/result.png "Output"
+[image7]: ./output_images/HLS.png "HLS color space"
+[image8]: ./output_images/image_l.png "Image in L Space"
+[image9]: ./output_images/image_sobel.png "Image with sobel filter"
+[video1]: ./save.mp4 "Video"
+
+
+
+```python
+import cv2
+import glob
+from PIL import Image
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from ipywidgets import interact, interactive, fixed
+
+global counter
+global lane_left 
+global lane_right
+global mtx
+global dist
+
+```
+
+
+```python
+# read in images for camera calibration
+file_path = os.getcwd() +  "\\"+"camera_cal"+ "\\"
+images=glob.glob(file_path + "calibration*.jpg")
+
+objpoints=[]
+imgpoints=[]
+nx = 9 # the number of inside corners in x
+ny = 6 # the number of inside corners in y
+objp = np.zeros((ny*nx,3), np.float32)
+objp[:,:2] = np.mgrid[0:nx,0:ny].T.reshape(-1,2)
+
+# find object points in chessboard iamge 
+for image in images:
+    img=cv2.imread(image)
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    ret, corners = cv2.findChessboardCorners(gray, (nx,ny), None)
+    if ret==True:
+        imgpoints.append(corners)
+        objpoints.append(objp)
+        img = cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
+img_size = (gray.shape[1], gray.shape[0])
+
+# perform camera calibration to obtain the mtx matrix 
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img_size, None, None)
+```
+
+
+```python
+#Examples of undistorted chessboard image
+"""
+%matplotlib inline
+plt.figure(figsize=(10,8))
+
+img = cv2.imread("camera_cal/calibration2.jpg")
+img_undist = cv2.undistort(img, mtx, dist, None, mtx)
+plt.subplot(2,2,1)
+plt.title('Original Image', fontsize=20)
+fig =plt.imshow(img)
+
+plt.subplot(2,2,2)
+plt.title('Undistorted Image', fontsize=20)
+
+img = cv2.imread("camera_cal/calibration5.jpg")
+img_undist = cv2.undistort(img, mtx, dist, None, mtx)
+plt.subplot(2,2,3)
+plt.title('Original Image', fontsize=20)
+
+
+plt.subplot(2,2,4)
+plt.title('Undistorted Image')
+"""
+```
+
+
+
+
+    '\n%matplotlib inline\nplt.figure(figsize=(10,8))\n\nimg = cv2.imread("camera_cal/calibration2.jpg")\nimg_undist = cv2.undistort(img, mtx, dist, None, mtx)\nplt.subplot(2,2,1)\nplt.title(\'Original Image\', fontsize=20)\nfig =plt.imshow(img)\n\nplt.subplot(2,2,2)\nplt.title(\'Undistorted Image\', fontsize=20)\n\nimg = cv2.imread("camera_cal/calibration5.jpg")\nimg_undist = cv2.undistort(img, mtx, dist, None, mtx)\nplt.subplot(2,2,3)\nplt.title(\'Original Image\', fontsize=20)\n\n\nplt.subplot(2,2,4)\nplt.title(\'Undistorted Image\')\n'
 
 
 
@@ -561,21 +564,13 @@ def FindLaneInImage(ImgRGB, bVisualize=0):
 ```python
 image_path='./test_images/test1.jpg'
 ImgBGR = cv2.imread(image_path)
-plt.title('Test Image', fontsize=20)
-plt.imshow(ImgBGR)
 ImgRGB = cv2.cvtColor(ImgBGR, cv2.COLOR_BGR2RGB)
 bVisualize=0
 counter=0
 img_out=FindLaneInImage(ImgRGB, bVisualize)
 
-plt.title('Image with lanes detected', fontsize=20)
-plt.imshow(img_out,cmap ='gray')
-plt.savefig('final_result.png')
+
 ```
-
-
-![png](output_20_0.png)
-
 
 
 ```python
@@ -605,13 +600,13 @@ print(counter)
     [MoviePy] Writing video 2010.mp4
     
 
-     98%|██████████████████████████████████████████████████████████████████████▌ | 50/51 [00:11<00:00,  4.32it/s]
+     98%|██████████████████████████████████████████████████████████████████████▌ | 50/51 [00:11<00:00,  4.49it/s]
     
 
     [MoviePy] Done.
     [MoviePy] >>>> Video ready: 2010.mp4 
     
-    Wall time: 12.2 s
+    Wall time: 12.1 s
     51
     
 
