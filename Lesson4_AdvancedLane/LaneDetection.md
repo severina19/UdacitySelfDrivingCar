@@ -24,13 +24,15 @@ The goals / steps of this project are the following:
 [image7]: ./output_images/HLS.png "HLS color space"
 [image8]: ./output_images/image_l.png "Image in L Space"
 [image9]: ./output_images/image_sobel.png "Image with sobel filter"
+[image10]: ./output_images/final_result.png " Final Result"
+
 [video1]: ./save.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
-### Camera Calibration
+## Camera Calibration
 
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.
@@ -133,11 +135,7 @@ fig =plt.imshow(img_undist)
 ![png](output_8_0.png)
 
 
-To store some information about the lane in the previous running cycles and build up a history of the lane object, I created a class called Line and defined the two attributes "detected" and "last_poly_coeff". In the attribute "last_poly_coeff", the coefficients of the lane in the current picture is stored and used as a starting value of the next picture. As suggsted in the learning material, I also tried out using more attributes such as "best_fit" and "recent_xfitted", where I store  the polynomial coefficients averaged over the last n iterations, and the x values of the last n fits of the line. These Information can be used when the lane detected in the current picture largely differs from the previous experience value. 
-
-When I first ran my image processing pipeline, the lane detection algorithm was working overall but the lanes are jumping sometimes, despite all the sanity checks I have added. It took me two days until I have detected that the error was already made during the camera calibration step. I have falsely put the camera calibration function inside the loop where I read in all the chessboard images for calibration. After I corrected this, The pipeline was working fine for the normal project video, even without any sanity checks. Due to timing reason I was not able to get a perfect line fitting algorithm of the challenging video, but I believe with that with enough sanity checks it will work as well. 
-
-### Pipeline (test images)
+## Pipeline (images)
 
 
 Here I will explain how I have build the image processing pipeline based on one example picture.
@@ -146,11 +144,15 @@ The example image I have used is shown below.
 
 ![alt text][image1]
 
+
+### image Undistortion
 The first step of the pipeline is to perform image distortion correction, using the camera matrix we obtained previously. The image with distortion correction is the following:
 
 ![alt text][image2]
 
-And then, I used a combination of color and gradient thresholds to generate a binary image. I used color transformation to translate the image from rgb space into hls color space. HLS stands for "Hue", "Saturation" and "Lightness", and the color space can be presented by this picture:
+### Color and Gradient Thresholding
+
+In the next step  I used a combination of color and gradient thresholds to generate a binary image. I used color transformation to translate the image from rgb space into hls color space. HLS stands for "Hue", "Saturation" and "Lightness", and the color space can be presented by this picture:
 
 ![alt text][image7]
 
@@ -162,6 +164,7 @@ Another filter I have used is the sobel operation for finding the gradients in x
 
 ![alt text][image9]
 
+### Perspective Transform
 The next step to do is to transform the picture into bird eyes view, thus we can calculate the curvature. To do this, I used the warpPerspective function provided by cv2 library. To do that I need to define the source and destination points of the image. I used the ones provided in the template and find the result very satisfying. The values are:
 
 | Source        | Destination   | 
@@ -178,6 +181,41 @@ And the warped image in birds eye view becomes:
 Combined with the color and gradient thresholding method, we finally obtain the following image:
 
 ![alt text][image3]
+
+### Polynomial Fit
+
+After we obtained the binary warped image, we can starting looking for the lanes. Here I used the sliding window search algorithm introduced in the class. I did this by creating a histogram of the buttom side of the image, and finding maximum values in the left and right halves of the image. The peaks in the histogram will most likely be the x position of the lane. The image is plit into 9 horizontal slices. And starting from the bottom slice, we enclose a 100 pixel wide window around the left peak and right peak of the histogram, and perform mean calculation of all the pixel values. This value will be used as the starting value of the next slice. 
+
+After obtaining two groups of pixels which will most likely be our left and right lane, we can fit a second order polynomial to each pixel group, which will be our left and right lane. 
+
+This part is realized by the function 'FitLanes'.
+
+
+### Measuring Curvature and Calculating Offset
+
+With the polynomial fit for the left and right lane lines, we can calculated the radius of curvature according to formula introduced in the class, which is also explained [here](http://www.intmath.com/applications-differentiation/8-radius-curvature.php).I converted the distance units from pixels to meters, with the assumption of 30 meters per 720 pixels in the vertical direction, and 3.7 meters per 700 pixels in the horizontal direction. I took the average radius of the left and right lanes and obtained the radius of the lane.
+
+Given the polynomial fit for the left and right lane lines, we can calculated the offset between the vehicle and the the lane center. We can make the assuption that the vehicle's center is the center of the image. I calculated the lane's center as the mean x value of the bottom x value of the left lane line, and bottom x value of the right lane line. The offset is then the center of the vehicle substracted by the lane center. 
+
+The lane radius ad the vehicle's offset from the center are both displayed in the output video stream. This part is realized by the function 'curvature'.
+
+
+### Display Result 
+Now that we have found the lanes and calculated the curvature and the offset, the final step is to warp the image back into the original image and display the results. The output of the image pipeline is shown below. 
+
+![alt text][image10]
+
+### Pipeline (Video)
+
+When we a processing a video, we can use the same pipeline for the image, because a video is only a sequence of many image. But an advange when processing a video is that we can assume that the lanes detected in different image frames are correlating and there will not be large jumpes between two connecting images. 
+
+To store some information about the lane in the previous running cycles and build up a history of the lane object, I created a class called Line and defined the two attributes "detected" and "last_poly_coeff". In the attribute "last_poly_coeff", the coefficients of the lane in the current picture is stored and used as a starting value of the next picture. As suggsted in the learning material, I also tried out using more attributes such as "best_fit" and "recent_xfitted", where I store  the polynomial coefficients averaged over the last n iterations, and the x values of the last n fits of the line. These Information can be used when the lane detected in the current picture largely differs from the previous experience value. 
+
+
+### Discussion
+
+When I first ran my image processing pipeline, the lane detection algorithm was working overall but the lanes are jumping sometimes, despite all the sanity checks I have added. It took me two days until I have detected that the error was already made during the camera calibration step, because I always assumed that my tracking algorithm was wrong. I have falsely put the camera calibration function inside the loop where I read in all the chessboard images for calibration. After I corrected this, The pipeline was working fine for the normal project video, even without any sanity checks. Due to timing reason I was not able to get a perfect line fitting algorithm of the challenging video, but I believe with that with enough sanity checks it will work as well. 
+
 
 
 
@@ -258,8 +296,8 @@ def create_output_img(undist,M_inv, warped, left_fit, right_fit):
     cv2.fillPoly(image_warp, np.int_([pts]), (50,205,50))
 
     # Warp the blank back to original image space using inverse perspective matrix (Minv)
-    warp_inv = cv2.warpPerspective(image_warp, M_inv, (image_warp.shape[1], image_warp.shape[0])) 
-
+    warp_inv = cv2.warpPerspective(image_warp, M_inv, (image_warp.shape[1], image_warp.shape[0]))
+    
     # Combine the result with the original image
     img_out = cv2.addWeighted(undist, 1, warp_inv, 0.3, 0)
     return img_out
@@ -267,7 +305,7 @@ def create_output_img(undist,M_inv, warped, left_fit, right_fit):
 
 
 ```python
-def FindLanes(binary_warped):
+def FitLanes(binary_warped):
     global counter
     global lane_left 
     global lane_right
@@ -321,11 +359,12 @@ def FindLanes(binary_warped):
             # Append these indices to the lists
             left_lane_inds.append(good_left_inds)
             right_lane_inds.append(good_right_inds)
-            # If you found > minpix pixels, recenter next window on their mean position
+            # recenter next window on their mean position
             if len(good_left_inds) > minpix:
                 leftx_lane = np.int(np.mean(nonzerox[good_left_inds]))
             if len(good_right_inds) > minpix:        
                 rightx_lane = np.int(np.mean(nonzerox[good_right_inds]))
+
 
         # Concatenate the arrays of indices
         left_lane_inds = np.concatenate(left_lane_inds)
@@ -495,7 +534,7 @@ def FindLaneInImage(ImgRGB, bVisualize=0):
         #plt.savefig('warped_image.png')
         
 
-    left_fit, right_fit, out_img  = FindLanes(binary_warped)
+    left_fit, right_fit, out_img  = FitLanes(binary_warped)
     if bVisualize == 1:
         display_result(binary_warped, left_fit,right_fit,out_img)
         
@@ -513,8 +552,7 @@ def FindLaneInImage(ImgRGB, bVisualize=0):
     
     fontScale = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(img_out,Test_Curv,(10,100),  fontScale, 2,(255,255,255),2,cv2.LINE_AA)
-    cv2.putText(img_out,Text_Offset,(30,300),  fontScale, 2,(255,255,255),2,cv2.LINE_AA)
-
+    cv2.putText(img_out,Text_Offset,(20,200),  fontScale, 2,(255,255,255),2,cv2.LINE_AA)
     counter = counter+1
     return img_out
 ```
@@ -526,67 +564,17 @@ ImgBGR = cv2.imread(image_path)
 plt.title('Test Image', fontsize=20)
 plt.imshow(ImgBGR)
 ImgRGB = cv2.cvtColor(ImgBGR, cv2.COLOR_BGR2RGB)
-bVisualize=1
+bVisualize=0
 counter=0
-FindLaneInImage(ImgRGB, bVisualize)
+img_out=FindLaneInImage(ImgRGB, bVisualize)
+
+plt.title('Image with lanes detected', fontsize=20)
+plt.imshow(img_out,cmap ='gray')
+plt.savefig('final_result.png')
 ```
 
 
-
-
-    array([[[ 97, 153, 200],
-            [ 97, 153, 200],
-            [ 97, 153, 200],
-            ..., 
-            [ 88, 150, 197],
-            [ 87, 149, 196],
-            [ 85, 147, 194]],
-    
-           [[ 98, 154, 201],
-            [ 97, 153, 200],
-            [ 97, 153, 200],
-            ..., 
-            [ 87, 149, 196],
-            [ 86, 148, 195],
-            [ 85, 147, 194]],
-    
-           [[ 98, 154, 201],
-            [ 98, 154, 201],
-            [ 98, 154, 201],
-            ..., 
-            [ 87, 149, 196],
-            [ 86, 148, 195],
-            [ 86, 148, 195]],
-    
-           ..., 
-           [[103,  89, 104],
-            [104,  90, 104],
-            [105,  91, 105],
-            ..., 
-            [126, 107, 100],
-            [127, 108, 101],
-            [123, 104,  97]],
-    
-           [[105,  91, 103],
-            [106,  92, 104],
-            [107,  92, 105],
-            ..., 
-            [125, 106,  99],
-            [125, 106,  99],
-            [123, 104,  97]],
-    
-           [[110,  94, 105],
-            [110,  94, 105],
-            [110,  94, 104],
-            ..., 
-            [126, 107, 100],
-            [126, 107, 100],
-            [125, 107, 100]]], dtype=uint8)
-
-
-
-
-![png](output_20_1.png)
+![png](output_20_0.png)
 
 
 
@@ -617,64 +605,13 @@ print(counter)
     [MoviePy] Writing video 2010.mp4
     
 
-    
-      0%|                                                                                 | 0/51 [00:00<?, ?it/s]
-      2%|█▍                                                                       | 1/51 [00:00<00:11,  4.28it/s]
-      4%|██▊                                                                      | 2/51 [00:00<00:11,  4.25it/s]
-      6%|████▎                                                                    | 3/51 [00:00<00:11,  4.20it/s]
-      8%|█████▋                                                                   | 4/51 [00:00<00:10,  4.28it/s]
-     10%|███████▏                                                                 | 5/51 [00:01<00:10,  4.32it/s]
-     12%|████████▌                                                                | 6/51 [00:01<00:10,  4.33it/s]
-     14%|██████████                                                               | 7/51 [00:01<00:10,  4.37it/s]
-     16%|███████████▍                                                             | 8/51 [00:01<00:09,  4.37it/s]
-     18%|████████████▉                                                            | 9/51 [00:02<00:09,  4.36it/s]
-     20%|██████████████                                                          | 10/51 [00:02<00:09,  4.38it/s]
-     22%|███████████████▌                                                        | 11/51 [00:02<00:09,  4.34it/s]
-     24%|████████████████▉                                                       | 12/51 [00:02<00:08,  4.41it/s]
-     25%|██████████████████▎                                                     | 13/51 [00:02<00:08,  4.42it/s]
-     27%|███████████████████▊                                                    | 14/51 [00:03<00:08,  4.40it/s]
-     29%|█████████████████████▏                                                  | 15/51 [00:03<00:08,  4.35it/s]
-     31%|██████████████████████▌                                                 | 16/51 [00:03<00:08,  4.31it/s]
-     33%|████████████████████████                                                | 17/51 [00:03<00:07,  4.36it/s]
-     35%|█████████████████████████▍                                              | 18/51 [00:04<00:07,  4.32it/s]
-     37%|██████████████████████████▊                                             | 19/51 [00:04<00:07,  4.39it/s]
-     39%|████████████████████████████▏                                           | 20/51 [00:04<00:07,  4.34it/s]
-     41%|█████████████████████████████▋                                          | 21/51 [00:04<00:06,  4.31it/s]
-     43%|███████████████████████████████                                         | 22/51 [00:05<00:06,  4.33it/s]
-     45%|████████████████████████████████▍                                       | 23/51 [00:05<00:06,  4.27it/s]
-     47%|█████████████████████████████████▉                                      | 24/51 [00:05<00:06,  4.36it/s]
-     49%|███████████████████████████████████▎                                    | 25/51 [00:05<00:05,  4.35it/s]
-     51%|████████████████████████████████████▋                                   | 26/51 [00:05<00:05,  4.30it/s]
-     53%|██████████████████████████████████████                                  | 27/51 [00:06<00:05,  4.18it/s]
-     55%|███████████████████████████████████████▌                                | 28/51 [00:06<00:05,  4.18it/s]
-     57%|████████████████████████████████████████▉                               | 29/51 [00:06<00:05,  4.16it/s]
-     59%|██████████████████████████████████████████▎                             | 30/51 [00:06<00:04,  4.26it/s]
-     61%|███████████████████████████████████████████▊                            | 31/51 [00:07<00:04,  4.33it/s]
-     63%|█████████████████████████████████████████████▏                          | 32/51 [00:07<00:04,  4.38it/s]
-     65%|██████████████████████████████████████████████▌                         | 33/51 [00:07<00:04,  4.36it/s]
-     67%|████████████████████████████████████████████████                        | 34/51 [00:07<00:03,  4.39it/s]
-     69%|█████████████████████████████████████████████████▍                      | 35/51 [00:08<00:03,  4.36it/s]
-     71%|██████████████████████████████████████████████████▊                     | 36/51 [00:08<00:03,  4.34it/s]
-     73%|████████████████████████████████████████████████████▏                   | 37/51 [00:08<00:03,  4.40it/s]
-     75%|█████████████████████████████████████████████████████▋                  | 38/51 [00:08<00:02,  4.40it/s]
-     76%|███████████████████████████████████████████████████████                 | 39/51 [00:09<00:02,  4.34it/s]
-     78%|████████████████████████████████████████████████████████▍               | 40/51 [00:09<00:02,  4.44it/s]
-     80%|█████████████████████████████████████████████████████████▉              | 41/51 [00:09<00:02,  4.53it/s]
-     82%|███████████████████████████████████████████████████████████▎            | 42/51 [00:09<00:01,  4.50it/s]
-     84%|████████████████████████████████████████████████████████████▋           | 43/51 [00:09<00:01,  4.37it/s]
-     86%|██████████████████████████████████████████████████████████████          | 44/51 [00:10<00:01,  4.36it/s]
-     88%|███████████████████████████████████████████████████████████████▌        | 45/51 [00:10<00:01,  4.43it/s]
-     90%|████████████████████████████████████████████████████████████████▉       | 46/51 [00:10<00:01,  4.36it/s]
-     92%|██████████████████████████████████████████████████████████████████▎     | 47/51 [00:10<00:00,  4.40it/s]
-     94%|███████████████████████████████████████████████████████████████████▊    | 48/51 [00:11<00:00,  4.37it/s]
-     96%|█████████████████████████████████████████████████████████████████████▏  | 49/51 [00:11<00:00,  4.39it/s]
-     98%|██████████████████████████████████████████████████████████████████████▌ | 50/51 [00:11<00:00,  4.39it/s]
+     98%|██████████████████████████████████████████████████████████████████████▌ | 50/51 [00:11<00:00,  4.32it/s]
     
 
     [MoviePy] Done.
     [MoviePy] >>>> Video ready: 2010.mp4 
     
-    Wall time: 12.5 s
+    Wall time: 12.2 s
     51
     
 
