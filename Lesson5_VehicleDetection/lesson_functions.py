@@ -51,7 +51,7 @@ def bin_spatial(img, size=(32, 32)):
     
     
 # Define a function to compute color histogram features 
-def color_hist(img, nbins=32, bins_range=(0, 256)):
+def color_hist(img, nbins=32, bins_range=(0, 256), vis=False):
     # Compute the histogram of the color channels separately
     channel1_hist = np.histogram(img[:,:,0], bins=nbins, range=bins_range)
     channel2_hist = np.histogram(img[:,:,1], bins=nbins, range=bins_range)
@@ -59,8 +59,17 @@ def color_hist(img, nbins=32, bins_range=(0, 256)):
     # Concatenate the histograms into a single feature vector
     hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
     # Return the individual histograms, bin_centers and feature vector
-    return hist_features
+    
+    # Generating bin centers
+    bin_edges = channel1_hist[1] #all three bins are the same size
+    bin_centers = (bin_edges[1:] + bin_edges[0:len(bin_edges) - 1])/2
+    
+    if vis == True:
+        return channel1_hist, channel2_hist, channel3_hist, bin_centers
+    else:
+        return hist_features
 
+    
 
 # Define a function to extract features from a list of images
 def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
@@ -89,7 +98,7 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
         # Apply bin_spatial() to get spatial color features
         spatial_features = bin_spatial(feature_image, size=spatial_size)
         # Apply color_hist() also with a color space option now
-        hist_features = color_hist(feature_image, nbins=hist_bins, bins_range=(0, 256))
+        hist_features = color_hist(feature_image, nbins=hist_bins, bins_range=(0, 256),vis=False)
         # Call get_hog_features() with vis=False, feature_vec=True
     
         if hog_channel == 'ALL':
@@ -199,7 +208,7 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
           
             # Get color features
             spatial_features = bin_spatial(subimg, size=spatial_size)
-            hist_features = color_hist(subimg, nbins=hist_bins)
+            hist_features = color_hist(subimg, nbins=hist_bins,vis=False)
 
             # Scale features and make a prediction
             test_features = X_scaler.transform(np.hstack((spatial_features, hist_features, hog_features)).reshape(1, -1))    
