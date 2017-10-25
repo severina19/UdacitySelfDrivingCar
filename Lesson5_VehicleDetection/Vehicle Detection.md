@@ -231,14 +231,12 @@ print(scaled_X.shape)
 
 
 ```python
-print("1")
-image_orig = mpimg.imread('.\example_images\car.png')
+image_orig = cv2.imread('.\example_images\car.png')
+img_rgb= cv2.cvtColor(image_orig, cv2.COLOR_BGR2RGB)
 plt.figure()
 plt.title("car example")
-outfile = "car example.png"
-plt.imshow(image_orig)
-#plt.savefig(outfile)
-imgYcrCb = cv2.cvtColor(image_orig, cv2.COLOR_RGB2YCrCb)
+plt.imshow(img_rgb)
+imgYcrCb = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YCrCb)
 image_list=[]
 
 for channel in range(3):
@@ -253,14 +251,12 @@ for channel in range(3):
     #plt.savefig(outfile)
     plt.show()
     
-image_orig = cv2.imread('.\example_images\car.png')
-image = cv2.cvtColor(image_orig, cv2.COLOR_BGR2RGB)
-channel1_hist, channel2_hist, channel3_hist, bin_centers = color_hist(image, vis=True)
+channel1_hist, channel2_hist, channel3_hist, bin_centers = color_hist(img_rgb, vis=True)
 # Plot the examples
 fig = plt.figure(figsize=(12,3));
 
 plt.subplot(141)
-plt.imshow(image)
+plt.imshow(img_rgb)
 plt.title('Original Image', fontsize=15)
 plt.subplot(142)
 plt.bar(bin_centers, channel1_hist[0])
@@ -297,15 +293,16 @@ plt.show()
     
     
 image_list=[] 
-image = mpimg.imread('.\example_images\line.png')
-img = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
+image_orig = cv2.imread('.\example_images\line.png')
+img_rgb= cv2.cvtColor(image_orig, cv2.COLOR_BGR2RGB)
+imgYcrCb = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YCrCb)
 plt.figure()
 plt.title("non-car example")
 outfile = "non-car example.png"
-plt.imshow(image)
+plt.imshow(img_rgb)
 #plt.savefig(outfile)
 for channel in range(3):
-    features,hog_image = get_hog_features(img[:,:,channel], orient, pix_per_cell, 
+    features,hog_image = get_hog_features(imgYcrCb[:,:,channel], orient, pix_per_cell, 
                                           cell_per_block, vis=True, feature_vec=True)
 
     title = 'HOG channel %s' % (channel)
@@ -329,15 +326,12 @@ plt.imshow(image_list[2], cmap='gray')
 #plt.savefig("Notcar_HOG_out.png")
 plt.show()   
     
-
-image_orig = cv2.imread('.\example_images\line.png')
-image = cv2.cvtColor(image_orig, cv2.COLOR_BGR2RGB)
-channel1_hist, channel2_hist, channel3_hist, bin_centers = color_hist(image, vis=True)
+channel1_hist, channel2_hist, channel3_hist, bin_centers = color_hist(img_rgb, vis=True)
 # Plot the examples
 fig = plt.figure(figsize=(12,3));
 
 plt.subplot(141)
-plt.imshow(image)
+plt.imshow(img_rgb)
 plt.title('Original Image', fontsize=15)
 plt.subplot(142)
 plt.bar(bin_centers, channel1_hist[0])
@@ -356,7 +350,56 @@ plt.ylim(0, 800)
 plt.title('B Histogram', fontsize=15);
 #plt.savefig('output_images/line_color_hist_vis.png', 
             #bbox_inches="tight")    
-plt.show()    
+plt.show()  
+```
+
+    C:\MyProgs\Conda\envs\carnd-term1\lib\site-packages\skimage\feature\_hog.py:119: skimage_deprecation: Default value of `block_norm`==`L1` is deprecated and will be changed to `L2-Hys` in v0.15
+      'be changed to `L2-Hys` in v0.15', skimage_deprecation)
+    
+
+
+![png](output_9_1.png)
+
+
+
+![png](output_9_2.png)
+
+
+
+![png](output_9_3.png)
+
+
+
+![png](output_9_4.png)
+
+
+
+![png](output_9_5.png)
+
+
+
+![png](output_9_6.png)
+
+
+
+![png](output_9_7.png)
+
+
+
+![png](output_9_8.png)
+
+
+
+![png](output_9_9.png)
+
+
+
+![png](output_9_10.png)
+
+
+
+```python
+
 
 test_images = glob.glob('test_images/*.jpg')
 i=0
@@ -397,107 +440,62 @@ for image in test_images:
 
 ```
 
-    1
-    
-
     C:\MyProgs\Conda\envs\carnd-term1\lib\site-packages\skimage\feature\_hog.py:119: skimage_deprecation: Default value of `block_norm`==`L1` is deprecated and will be changed to `L2-Hys` in v0.15
       'be changed to `L2-Hys` in v0.15', skimage_deprecation)
     
 
 
-![png](output_9_2.png)
+![png](output_10_1.png)
 
 
 
-![png](output_9_3.png)
+![png](output_10_2.png)
 
 
 
-![png](output_9_4.png)
+![png](output_10_3.png)
 
 
 
-![png](output_9_5.png)
+![png](output_10_4.png)
 
 
 
-![png](output_9_6.png)
+![png](output_10_5.png)
 
 
 
-![png](output_9_7.png)
+![png](output_10_6.png)
 
 
 
-![png](output_9_8.png)
+![png](output_10_7.png)
 
 
 
-![png](output_9_9.png)
+![png](output_10_8.png)
 
 
 
-![png](output_9_10.png)
+![png](output_10_9.png)
 
 
 
-![png](output_9_11.png)
+![png](output_10_10.png)
 
 
 
-![png](output_9_12.png)
+![png](output_10_11.png)
 
 
 
-![png](output_9_13.png)
-
-
-
-![png](output_9_14.png)
-
-
-
-![png](output_9_15.png)
-
-
-
-![png](output_9_16.png)
-
-
-
-![png](output_9_17.png)
-
-
-
-![png](output_9_18.png)
-
-
-
-![png](output_9_19.png)
-
-
-
-![png](output_9_20.png)
-
-
-
-![png](output_9_21.png)
-
-
-
-![png](output_9_22.png)
-
-
-
-![png](output_9_23.png)
+![png](output_10_12.png)
 
 
 ## Video Processing 
 
 
 ```python
-
-
 def pipeline(image):
  
     b_boxes = find_cars(image, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
@@ -535,15 +533,41 @@ vehicle_detect = clip1.fl_image(pipeline)
 
 ```
 
+    [MoviePy] >>>> Building video test_video_out.mp4
+    [MoviePy] Writing video test_video_out.mp4
+    
+
+     97%|██████████████████████████████████████████████████████████████████████▏ | 38/39 [00:20<00:00,  1.80it/s]
+    
+
+    [MoviePy] Done.
+    [MoviePy] >>>> Video ready: test_video_out.mp4 
+    
+    Wall time: 21.8 s
+    
+
 
 ```python
 
-"""
+
 output_clip = 'project_video_output.mp4'
 
 #clip1 = VideoFileClip("test_video.mp4")
 clip1 = VideoFileClip("project_video.mp4")
 vehicle_detect = clip1.fl_image(pipeline)
 %time vehicle_detect.write_videofile(output_clip, audio=False)
-"""
+
 ```
+
+    [MoviePy] >>>> Building video project_video_output.mp4
+    [MoviePy] Writing video project_video_output.mp4
+    
+
+    100%|███████████████████████████████████████████████████████████████████▉| 1260/1261 [11:19<00:00,  1.90it/s]
+    
+
+    [MoviePy] Done.
+    [MoviePy] >>>> Video ready: project_video_output.mp4 
+    
+    Wall time: 11min 20s
+    
