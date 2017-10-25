@@ -40,6 +40,7 @@ I used a combined feature of hog features, spatial color features and color hist
 ![alt text][image7]
 
 ![alt text][image8]
+
 ### Histogram of Oriented Gradients (HOG)
 
 To compute the HOG of the images, I used the scikit-image library. The code for this step is contained under the file lesson_functions.py and in the function get_hog_features. As for the configuration, I used the following parameters:
@@ -62,10 +63,11 @@ The parameters were found by manually changing them and experimenting to try to 
 which are determined through trying out various parameters and using the one which yields the best accuray of the SVM. As for the color space, I used the `YCrCb` color space. Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)` on the non-car example:
 
 ![alt text][image5]
+
 And here is an example of using the `YCrCb` color space and HOG parameters as described on a car example:
+
 ![alt text][image6]
 
-I trained a linear SVM using the svm.SVC function in the scikit-learn library.The trained classifier yield an accuracy of 0.9922.
 
 ### Sliding Window Search
 
@@ -75,25 +77,20 @@ I decided to restrict my search to the area in the image where a car can be pres
 
 ![alt text][image3]
 
-As we can see, there are overlapping windows which are found, and also false positives. To combine the overlapping windows into one window for one car, and to reduce false positives, I used the heat map methond introduced in the class. With a threshold of 1 for the heat map, I get the following result: 
+As we can see, there are overlapping windows which are found, and also false positives. To combine the overlapping windows into one window for one car, and to reduce false positives, I used the heat map methond introduced in the class. With the assumption that each blob is a car, I reconstruct boxes to cover blobs. With a threshold of 1 for the heat map, I get the following result: 
 
 ![alt text][image4]
 
 ### Video Implementation
 
-The result of the vehicle detection pipleline is uploaded to this repository.
+As mentioned in the "Sliding Window Search" part, I have already used the heatmap and thresholding technique to minimize false positives in the pipeline. But when testing this pipeline on the video there are still some false positives appearing. The overlapping bounding boxes were resolved by using the function label() from scipy.ndimage.measurements to find the cars. I increased the threshold to reduce the false positives, the result can be shown in the video I have uploaded to this repository.
 Here's a [link to my video result](./project_video_output.mp4)
-
-
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
 
 
 
 ### Discussion
 
-
-I noticed that in the video where two cars are very close, it is detected as a single but bigger car. To resolve this issue I would like to detect if the region which is hot in the heatmap has two hot centroids instead of one, signalling the presence of two vehicles. 
+I noticed that in the video where two cars are very close, it is detected as a single but bigger car. Also, the threshold of the heat map I used is quite high, which indicates that the classifier yields false positive. The false positive happens when there is a car driving on the opposite lane even with barrier stripe. This is also provided in the "non-car" examples. I had to reduce the labeled images I used for training because of the computational capacity of my computer. Using the AWS and with all of the data will most probably improve the performance of the SVM. 
 
 ---
 
