@@ -14,7 +14,6 @@ def add_heat_video(heatmap, b_boxes_deque):
             heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
     # Return updated heatmap
     return heatmap
-
 def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
     # Make a copy of the image
     draw_img = np.copy(img)
